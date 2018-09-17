@@ -3,7 +3,7 @@ package alid;
 import org.junit.jupiter.api.Assertions;
 
 
-class javaStringDeDupTest {
+class JavaStringDeDupTest {
 
     @org.junit.jupiter.api.Test
     void Should_return_acehinstu_for_ceciestunechaine() {
