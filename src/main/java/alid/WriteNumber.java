@@ -2,40 +2,58 @@ package alid;
 
 import org.apache.commons.lang3.StringUtils;
 
-public interface WriteNumber {
-    static String toEnglishString(Integer value) {
+/**
+ * Spring Boot (Rest) - algorithm
+ */
+public class WriteNumber {
+
+    public static String toEnglishString(Integer value) {
+        //FIXME : Not specified : only integer positive values under 1_000_000
         if (null == value || value >= 1_000_000 || value < 0) {
             throw new IllegalArgumentException("incorrect parameter " + value);
         }
 
+        // FIXME : not specified : special case zero
         if (value.equals(0)) {
             return "Zero";
         }
 
-        StringBuilder result = new StringBuilder();
-        String stringValue = StringUtils.leftPad(String.valueOf(value), 6, "0");
-        if (value >= 1_000) {
-            String tenthThousandsValue = StringUtils.substring(stringValue, 1, 3);
-            String hundredsToEnglishString = hundredsToEnglishString(stringValue.charAt(0));
-            String tenthToEnglishString = tenthToEnglishString(tenthThousandsValue);
-            result.append(hundredsToEnglishString)
-                    .append(space(hundredsToEnglishString))
-                    .append(tenthToEnglishString)
-                    .append(space(tenthToEnglishString))
-                    .append("thousand, ");
-        }
+        String digitalStringValue = StringUtils.leftPad(String.valueOf(value), 6, "0");
 
-        String tenthValue = StringUtils.substring(stringValue, 4, 6);
-        String hundredsToEnglishString = hundredsToEnglishString(stringValue.charAt(3));
-        String tenthToEnglishString = tenthToEnglishString(tenthValue);
-        result.append(hundredsToEnglishString)
-                .append(space(hundredsToEnglishString))
-                .append(tenthToEnglishString);
-
-        return StringUtils.capitalize(result.toString());
+        return StringUtils.capitalize(
+                hundredThousandsToEnglishString(value, digitalStringValue)
+                        + hundredToEnglishString(digitalStringValue)
+        );
     }
 
-    static String space(String value) {
+    private static String hundredToEnglishString(String digitalStringValue) {
+        String tenthDigitalValue = StringUtils.substring(digitalStringValue, 4, 6);
+        char hundredDigitalChar = digitalStringValue.charAt(3);
+        return hundredsDigitalStringToEnglishString(hundredDigitalChar, tenthDigitalValue);
+    }
+
+    private static String hundredThousandsToEnglishString(Integer value, String digitalStringValue) {
+        if (value >= 1_000) {
+            String tenthThousandsDigitalValue = StringUtils.substring(digitalStringValue, 1, 3);
+            char hundredDigitalChar = digitalStringValue.charAt(0);
+            String tenthThousandsEnglishString = tenthToEnglishString(tenthThousandsDigitalValue);
+            return new StringBuilder().append(hundredsDigitalStringToEnglishString(hundredDigitalChar, tenthThousandsDigitalValue))
+                    .append(space(tenthThousandsEnglishString))
+                    .append("thousand, ").toString();
+        }
+        return "";
+    }
+
+    private static String hundredsDigitalStringToEnglishString(char hundredDigitalChar, String tenthDigitalValue) {
+        String hundredsEnglishString = hundredDigitalCharToEnglishString(hundredDigitalChar);
+        String tenthToEnglishString = tenthToEnglishString(tenthDigitalValue);
+        return new StringBuilder()
+                .append(hundredsEnglishString)
+                .append(space(hundredsEnglishString))
+                .append(tenthToEnglishString).toString();
+    }
+
+    private static String space(String value) {
         if (StringUtils.isNotBlank(value)) {
             return " ";
         } else {
@@ -43,7 +61,7 @@ public interface WriteNumber {
         }
     }
 
-    static String hundredsToEnglishString(Character character) {
+    private static String hundredDigitalCharToEnglishString(Character character) {
         String hundredsEnglishString = unitToEnglishString(character);
         if (hundredsEnglishString.isEmpty()) {
             return hundredsEnglishString;
@@ -52,7 +70,7 @@ public interface WriteNumber {
         }
     }
 
-    static String tenthToEnglishString(String tenthString) {
+    private static String tenthToEnglishString(String tenthString) {
         String unit = StringUtils.substring(tenthString, 1);
         String unitEnglishString = unitToEnglishString(unit.charAt(0));
 
@@ -66,7 +84,7 @@ public interface WriteNumber {
         }
     }
 
-    static String unitToEnglishString(Character character) {
+    private static String unitToEnglishString(Character character) {
         switch (character) {
             case '1':
                 return "one";
@@ -91,7 +109,7 @@ public interface WriteNumber {
         }
     }
 
-    static String tenthToEnglishString(Character integer) {
+    private static String tenthToEnglishString(Character integer) {
         switch (integer) {
             case '2':
                 return "twenty";
@@ -114,7 +132,7 @@ public interface WriteNumber {
         }
     }
 
-    static String firstTenthToEnglishString(String integer) {
+    private static String firstTenthToEnglishString(String integer) {
         switch (integer) {
             case "10":
                 return "ten";
