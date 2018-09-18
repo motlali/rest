@@ -20,13 +20,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TimeControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     public void currentTimeShouldReturnTime() throws Exception {
 
-        DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2018-01-16T00:00:00.000-05:00").getMillis());// Fix Time
+        DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2018-01-16T00:00:00.000-05:00").getMillis());//set Fixed Time for test
 
         this.mockMvc.perform(get("/time/current")).andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("2018-01-16T00:00:00.000-05:00"));
@@ -34,7 +35,7 @@ public class TimeControllerTest {
 
     @After
     public void tearDown() {
-        DateTimeUtils.setCurrentMillisSystem();// UnFix Time
+        DateTimeUtils.setCurrentMillisSystem();// UnSet Fixed Time after test
     }
 
 }

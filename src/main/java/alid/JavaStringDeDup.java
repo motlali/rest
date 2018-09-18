@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- *
+ *  Spring Boot (Rest) - java
  */
 public interface JavaStringDeDup {
     static String deDup(String input, Integer maxSize) {

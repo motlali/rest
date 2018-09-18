@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class JavaStringDedupController {
+public class JavaStringDeDupController {
 
     @RequestMapping("/stringDeDup")
-    public Result stringDedup(@RequestParam(value = "value", defaultValue = "") String value) {
+    public Result stringDeDup(@RequestParam(value = "value", defaultValue = "") String value) {//FIXME : not specified --> ask client before : default String empty
         return Result.builder().content(JavaStringDeDup.deDup(value, 30)).build();
     }
 
